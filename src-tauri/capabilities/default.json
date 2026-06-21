@@ -12,6 +12,9 @@
     "global-shortcut:allow-unregister",
     "clipboard-manager:default",
     "clipboard-manager:allow-write-text",
-    "clipboard-manager:allow-read-text"
+    "clipboard-manager:allow-read-text",
+    "core:window:allow-hide",
+    "core:app:allow-default-window-icon",
+    "core:window:allow-show"
   ]
 }

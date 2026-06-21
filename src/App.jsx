@@ -1,7 +1,10 @@
 import {useEffect, useState} from 'react'
 import './App.css'
 import { writeText, readText } from '@tauri-apps/plugin-clipboard-manager';
-
+import { TrayIcon } from '@tauri-apps/api/tray';
+import { Menu } from '@tauri-apps/api/menu';
+import { getCurrentWindow } from '@tauri-apps/api/window';
+import { defaultWindowIcon } from '@tauri-apps/api/app';
 
 function App() {
 
@@ -20,11 +23,45 @@ const formattedDateTime=(timestamp)=>{
 }
 
     useEffect(() => {
+
+        async function tray() {
+            const menu = await Menu.new({
+                items: [
+                    {
+                        id: 'quit',
+                        text: 'Quit',
+                        action: () => {
+                            console.log('quit pressed');
+                        },
+                    },
+                    {
+                        id: 'show',
+                        text: 'show',
+                        action: async() => {
+                            await getCurrentWindow().show();
+                        },
+                    },
+                ],
+            });
+
+            const options = {
+                menu,
+                icon: await defaultWindowIcon(),
+                menuOnLeftClick: true,
+            };
+
+            const tray = await TrayIcon.new(options);        }
+        tray();
+
+    }, []);
+
+
+    useEffect(() => {
         let lastContent="";
         async function fetchData() {
             const content = await readText();
             if(content!==lastContent){
-                setItems(prev=>[...prev,{time:Date.now(),content:content}]);
+                setItems(prev=>[{time:Date.now(),content:content},...prev]);
                 lastContent=content;
             }
         }
@@ -33,17 +70,34 @@ const formattedDateTime=(timestamp)=>{
 
     }, []);
 
-    return (
-    <div className='body'>
-        <h1 className="heading">Clipboard Manager</h1>
-        {items.map((item, index) => (
-            <div className='card' key={item.time}>
-                <div>{formattedDateTime(item.time)}</div>
-                <pre className='copied-text'>{item.content}</pre>
-            </div>
-        ))}
+    async function HandleHideWindow(){
+        await getCurrentWindow().hide();
+    }
 
-    </div>
+
+    return (
+        <div>
+            <div className='titlebar'>
+                <div className='titlebar-btns'>
+                    <button onClick={HandleHideWindow}>close</button>
+                    <button>minimize</button>
+                    <button>maximize</button>
+                </div>
+            </div>
+            <div className='body'>
+                <div className="header">
+                    <h1 className="heading">Clipboard Manager</h1>
+                </div>
+                <div className='list'>{items.map((item, index) => (
+                    <div className='card' key={item.time}>
+                        <div>{formattedDateTime(item.time)}</div>
+                        <pre className='copied-text'>{item.content}</pre>
+                    </div>
+                ))}</div>
+
+            </div>
+        </div>
+
   )
 }
 
