@@ -30,8 +30,8 @@ const formattedDateTime=(timestamp)=>{
                     {
                         id: 'quit',
                         text: 'Quit',
-                        action: () => {
-                            console.log('quit pressed');
+                        action: async() => {
+                            await getCurrentWindow().close();
                         },
                     },
                     {
@@ -39,6 +39,7 @@ const formattedDateTime=(timestamp)=>{
                         text: 'show',
                         action: async() => {
                             await getCurrentWindow().show();
+                            await getCurrentWindow().setFocus();
                         },
                     },
                 ],
@@ -47,7 +48,7 @@ const formattedDateTime=(timestamp)=>{
             const options = {
                 menu,
                 icon: await defaultWindowIcon(),
-                menuOnLeftClick: true,
+                menuOnLeftClick: false,
             };
 
             const tray = await TrayIcon.new(options);        }
@@ -74,17 +75,25 @@ const formattedDateTime=(timestamp)=>{
         await getCurrentWindow().hide();
     }
 
+    async function HandleMaximizeWindow(){
+        await getCurrentWindow().toggleMaximize();
+    }
+
+    async function HandleMinimizeWindow(){
+        await getCurrentWindow().minimize();
+    }
 
     return (
-        <div>
+        <div className='body'>
             <div className='titlebar'>
+                <div data-tauri-drag-region className='empty-space-title-bar'></div>
                 <div className='titlebar-btns'>
-                    <button onClick={HandleHideWindow}>close</button>
-                    <button>minimize</button>
-                    <button>maximize</button>
+                    <button onClick={HandleHideWindow}> ✕ </button>
+                    <button onClick={HandleMaximizeWindow}> 🗖 </button>
+                    <button onClick={HandleMinimizeWindow}> _ </button>
                 </div>
             </div>
-            <div className='body'>
+            <div className='main-body'>
                 <div className="header">
                     <h1 className="heading">Clipboard Manager</h1>
                 </div>

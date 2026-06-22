@@ -2,10 +2,15 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
-
 .body{
+  width: 100%;
+
+}
+
+.main-body{
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -16,16 +21,16 @@
   justify-content: flex-start;
   width: 70%;
   background-color: #16171c;
-  position: fixed;
-  padding-bottom: 10px;
+  padding-top:20px;
+  /*position: fixed;*/
+
 
 }
 .list{
-  margin-top: 10%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow: auto;
+  overflow: scroll;
 
 }
 
@@ -51,9 +56,30 @@ h1{
   text-align: left;
 }
 
+.titlebar{
+  width: 100%;
+  background-color: #2647ea;
+  display: flex;
+  position: fixed;
+
+
+}
+
 .titlebar-btns{
   display: flex;
   flex-direction: row-reverse;
+}
+
+.titlebar-btns button{
+  padding: 5px;
+}
+
+
+
+.empty-space-title-bar{
+  background-color: #810808;
+  width: 100%;
+
 }
 
 
